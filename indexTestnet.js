@@ -2,12 +2,12 @@ require("dotenv").config()
 
 const Web3 = require("web3")
 const EthereumTransaction = require("ethereumjs-tx").Transaction
-const ganacheUrl = "HTTP://127.0.0.1:7545"
 const testNetUrl = process.env.GOERLI_INFURA_ENDPOINT
 const web3 = new Web3(testNetUrl)
 const sendingAddress = "0x2da4393b247B4A33575FacCF6b7614D44b8088Ce"
 const receivingAddress = "0x86D516E75bA85bB43e07C9E32c515EB14a7073BB"
 
+// Get the balance of sending and receiving accounts
 const getBalance = async () => {
     const balance1 = await web3.eth.getBalance(sendingAddress)
     console.log("balance sending address in Ether: ", web3.utils.fromWei(balance1, "ether"))
@@ -26,15 +26,19 @@ const getNonce = async (add) => {
 }
 
 const app = async () => {
+    // Get balance of the 2 accounts
     await getBalance()
+    // retrieve the nonce of sending account
     let nonce = await getNonce(sendingAddress)
     console.log("nonce of sending address is: ", nonce);
     let nonceHex = "0x" + nonce.toString(16)
+    // retrieve the Gas Price
     let gasPrice = await web3.eth.getGasPrice()
     let gasPriceHex = "0x" + gasPrice.toString(16)
     console.log("gas price - decimal: ", gasPrice);
     console.log("gas price - hex: ", gasPriceHex);
    
+    // Build raw transaction
     const rawTransaction = {
         nonce: nonceHex,
         to: receivingAddress,
@@ -49,7 +53,9 @@ const app = async () => {
     transaction.sign(privateKeySenderHex)
     const serializedTransaction = transaction.serialize()
     console.log("serialized transaction", serializedTransaction);
+    // Send transaction
     await web3.eth.sendSignedTransaction(serializedTransaction)
+    // Check the new balance of the 2 accounts
     getBalance()
 
 }
