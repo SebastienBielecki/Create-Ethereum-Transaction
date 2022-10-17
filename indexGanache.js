@@ -1,5 +1,5 @@
 require("dotenv").config()
-console.log(process.env);
+
 
 const Web3 = require("web3")
 const EthereumTransaction = require("ethereumjs-tx").Transaction
@@ -28,18 +28,13 @@ const getNonce = async (add) => {
     // console.log(nonce);
 }
 
-
-
-
-// const rawTransaction = {
-//     nonce: "0x04",
-//     to: receivingAddress,
-//     gasPrice: "0x20000000",
-//     gasLimit: "0x30000",
-//     value: amountHex,
-//     data: "0x000"
-// }
-
+const getEthMetrics = async () => {
+    console.log("----- METRICS -----")
+    const gasPrice = await web3.eth.getGasPrice()
+    console.log("gas price", gasPrice);
+    const getBlockTransactionCount = await web3.eth.getBlockTransactionCount(1)
+    console.log("Block 1 transaction count: ", getBlockTransactionCount)
+}
 
 
 
@@ -70,7 +65,10 @@ const app = async () => {
     transaction.sign(privateKeySenderHex)
     const serializedTransaction = transaction.serialize()
     await web3.eth.sendSignedTransaction(serializedTransaction)
-    getBalance()
+    await getBalance()
+
+    // Get some Ethereum Metrics - lecture 15
+    getEthMetrics()
 
 }
 

@@ -1,4 +1,5 @@
 require("dotenv").config()
+console.log(process.env);
 
 const Web3 = require("web3")
 const EthereumTransaction = require("ethereumjs-tx").Transaction
@@ -9,6 +10,7 @@ const receivingAddress = "0x86D516E75bA85bB43e07C9E32c515EB14a7073BB"
 
 // Get the balance of sending and receiving accounts
 const getBalance = async () => {
+    console.log("----- BALANCES -----")
     const balance1 = await web3.eth.getBalance(sendingAddress)
     console.log("balance sending address in Ether: ", web3.utils.fromWei(balance1, "ether"))
     const balance2 = await web3.eth.getBalance(receivingAddress)
@@ -25,7 +27,21 @@ const getNonce = async (add) => {
     // console.log(nonce);
 }
 
+// Get Ethereum Metrics - lecture 15
+const getEthMetrics = async () => {
+    console.log("----- METRICS -----")
+    const gasPrice = await web3.eth.getGasPrice()
+    console.log("gas price", gasPrice);
+    const currentBlockNumber = await web3.eth.getBlockNumber()
+    console.log("current block number on Goerli: ", currentBlockNumber);
+    const getBlockTransactionCount = await web3.eth.getBlockTransactionCount(currentBlockNumber)
+    console.log("current block transaction count: ", getBlockTransactionCount)
+    
+}
+
 const app = async () => {
+    // Get some Eth metrics - lecture 15
+    await getEthMetrics()
     // Get balance of the 2 accounts
     await getBalance()
     // retrieve the nonce of sending account
